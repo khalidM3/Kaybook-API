@@ -20,8 +20,8 @@ import handleError from './handle-error.js'
 export default new Router()
 .use([
   cors({
-    origin: process.env.CORS_ORIGINS.split(' '),
-    credentials: true,
+    origin: '*',
+    credentials: false,
   }),
   morgan('dev'),
   cookieParser(),

@@ -4,7 +4,6 @@ import {Router} from 'express'
 import {bearerAuth} from '../middleware/parser-auth.js'
 import parserBody from '../middleware/parser-body'
 import Page from '../model/page.js'
-import createError from 'http-errors'
 import {log} from '../lib'
 
 export default new Router()

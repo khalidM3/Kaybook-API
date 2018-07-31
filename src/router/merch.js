@@ -4,8 +4,6 @@ import {Router} from 'express'
 import {bearerAuth} from '../middleware/parser-auth.js'
 import parserBody from '../middleware/parser-body'
 import Merch from '../model/merch'
-import createError from 'http-errors'
-import {log} from '../lib'
 
 export default new Router()
 .post('/api/merch/merch/:pageID', bearerAuth, parserBody, (req, res, next) => {

@@ -1,8 +1,10 @@
+// IMPORTS
 import createError from 'http-errors'
 import * as util from '../lib'
 import Profile from './profile'
 import Mongoose, {Schema} from 'mongoose'
 
+// SCHEMA
 const merchSchema = new Schema({ 
   posterID: {type: Schema.Types.ObjectId},
   postedID: {type: Schema.Types.ObjectId},
@@ -10,25 +12,26 @@ const merchSchema = new Schema({
   desc: {type: String},
   picURI: [{type: String}],
   options:[{type: Schema.Types.ObjectId, ref: 'option'}]
-});
+})
 
-const Merch = Mongoose.model('merch', merchSchema);
+// MODEL
+const Merch = Mongoose.model('merch', merchSchema)
 
+//STATIC METHODS
 Merch.create = function(req) {
-  if (!req._body) return next(createError(400, 'request body expected'));
+  if (!req._body) return next(createError(400, 'request body expected'))
 
   return Profile.findById(req.user.profile)
   .then( profile => {
-    let admin = profile.adminOf.some( pageID => pageID.toString() === req.params.pageID.toString());
-    // let member = profile.memberOf.some( pageID => pageID.toString() === req.params.pageID.toString());
-    if(!admin) return next(createError(401, 'You are not the admin of this page'));
+    let admin = profile.adminOf.some( pageID => pageID.toString() === req.params.pageID.toString())
+    if(!admin) return next(createError(401, 'You are not the admin of this page'))
     if( admin) {
-      req.body.posterID = profile._id;
-      req.body.postedID = req.params.pageID;
+      req.body.posterID = profile._id
+      req.body.postedID = req.params.pageID
     }
     return new Merch(req.body).save()
     .then( merch => {
-      profile.merch.push(merch._id);
+      profile.merch.push(merch._id)
       return profile.save()
       .then( () => merch)
     })
@@ -52,8 +55,5 @@ Merch.delete = function(req) {
   })
 }
 
-
-
-
-
+// INTERFACE
 export default Merch

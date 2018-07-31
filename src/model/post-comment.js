@@ -1,9 +1,9 @@
+// IMPORTS
 import createError from 'http-errors'
-import * as util from '../lib'
-import Profile from './profile'
 import Post from './post'
 import Mongoose, {Schema} from 'mongoose'
 
+// SCHEMA
 const commentSchema = new Schema({
     posterID: {type: Schema.Types.ObjectId, ref:'profile'},
     postedID: {type: Schema.Types.ObjectId, required: true},
@@ -28,16 +28,14 @@ const commentSchema = new Schema({
       created: { type: Date, default: Date.now }
     }],
     created: {type: Date, default: Date.now}
-  });
+  })
 
-const Comment = Mongoose.model('answer', commentSchema);
+// MODEL
+const Comment = Mongoose.model('answer', commentSchema)
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      CREATE
-
-
+// STATIC METHODS
 Comment.create = function(req) {
-  if(!req._body) return next(createError(401, 'request body expected')); 
+  if(!req._body) return next(createError(401, 'request body expected')) 
   return Post.findById(req.params.postID)
   .then( post => {
     req.body.posterID = req.user.profile
@@ -52,7 +50,7 @@ Comment.create = function(req) {
 }
 
 Comment.reply = function(req) {
-  if(!req._body) return next(createError(401, 'request body expected'));
+  if(!req._body) return next(createError(401, 'request body expected'))
   return Comment.findById( req.params.answerID)
   .then( comment => {
     req.body.posterID = req.user.profile
@@ -76,9 +74,6 @@ Comment.report = function(req) {
   })
 }
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      READ
-
 Comment.fetch = function(req) {
   return Comment.findById(req.params.answerID)
   .populate({
@@ -91,55 +86,48 @@ Comment.fetch = function(req) {
 
 Comment.me = function(req){
   return Comment.find({ posterID: req.user.profile})
-  .populate('posterID');
+  .populate('posterID')
 }
 
 Comment.upvote = function(req) {
   return Comment.findById(req.params.answerID)
   .then( comment => {
-    let upvoted = comment.upvotes.some( PID => PID.toString() === req.user.profile.toString());
+    let upvoted = comment.upvotes.some( PID => PID.toString() === req.user.profile.toString())
     if(upvoted) {
-      comment.upvotes.remove(req.user.profile);
-      return comment.save();
+      comment.upvotes.remove(req.user.profile)
+      return comment.save()
     }
-    comment.downvotes.remove(req.user.profile);
-    comment.upvotes.push(req.user.profile);
-    return comment.save();
+    comment.downvotes.remove(req.user.profile)
+    comment.upvotes.push(req.user.profile)
+    return comment.save()
   })
 }
 
 Comment.downvote = function(req) {
   return Comment.findById(req.params.answerID)
   .then( comment => {
-    let downvoted = comment.downvotes.some( PID => PID.toString() === req.user.profile.toString());
+    let downvoted = comment.downvotes.some( PID => PID.toString() === req.user.profile.toString())
     if(downvoted) {
-      comment.downvotes.remove(req.user.profile);
-      return comment.save();
+      comment.downvotes.remove(req.user.profile)
+      return comment.save()
     }
-    comment.upvotes.remove(req.user.profile);
-    comment.downvotes.push(req.user.profile);
-    return comment.save();
+    comment.upvotes.remove(req.user.profile)
+    comment.downvotes.push(req.user.profile)
+    return comment.save()
   })
 }
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      UPDATE
-
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      DELETE
 
 Comment.delete = function(req) {
   return Comment.findById(req.params.answerID)
   .then( comment => {
-    let poster = comment.posterID.toString() === req.user.profile.toString();
-    if(!poster) return next(createError(401, 'You are not the owner of this comment'));
-    Comment.remove({ parents: comment._id}).exec();
-    Comment.findByIdAndRemove(comment._id).exec();
+    let poster = comment.posterID.toString() === req.user.profile.toString()
+    if(!poster) return next(createError(401, 'You are not the owner of this comment'))
+    Comment.remove({ parents: comment._id}).exec()
+    Comment.findByIdAndRemove(comment._id).exec()
     return Post.findById(comment.postedID)
       .then( post => {
-      post.comments.remove(comment._id);
-      return post.save();
+      post.comments.remove(comment._id)
+      return post.save()
     }) 
   })
 }
@@ -147,17 +135,17 @@ Comment.delete = function(req) {
 Comment.deleteReply = function(req) {
   return Comment.findById(req.params.answerID)
   .then( comment => {
-    let poster = comment.posterID.toString() === req.user.profile.toString();
-    if(!poster) return next(createError(401, 'You are not the owner of this comment'));
-    Comment.remove({ parents: comment._id}).exec();
-    Comment.findByIdAndRemove(comment._id).exec();
+    let poster = comment.posterID.toString() === req.user.profile.toString()
+    if(!poster) return next(createError(401, 'You are not the owner of this comment'))
+    Comment.remove({ parents: comment._id}).exec()
+    Comment.findByIdAndRemove(comment._id).exec()
     return Comment.findById(comment.postedID)
       .then( reply => {
-      reply.replies.remove(comment._id);
-      return reply.save();
+      reply.replies.remove(comment._id)
+      return reply.save()
     })
   })
 }
 
-
+// INTERFACE
 export default Comment

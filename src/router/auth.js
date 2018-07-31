@@ -8,8 +8,6 @@ import {log, daysToMilliseconds} from '../lib'
 
 export default new Router()
 .post('/api/signup', parserBody, (req, res, next) => {
-  log('__ROUTE__ POST /signup')
-
   new User.create(req.body)
   .then( user => user.tokenCreate())
   .then( token => {

@@ -1,8 +1,10 @@
+// IMPORTS
 import createError from 'http-errors'
 import * as util from '../lib'
 import Profile from './profile'
 import Mongoose, {Schema} from 'mongoose'
 
+// SCHEMA
 const optionSchema = new Schema({
   posterID: {type: Schema.Types.ObjectId},
   postedID: {type: Schema.Types.ObjectId},
@@ -20,12 +22,14 @@ const optionSchema = new Schema({
   qtty: {type: Number},
   buyers: [{type: Schema.Types.ObjectId}],
   created: {type: Date, default: Date.now}
-});
+})
 
-const Option = Mongoose.model('option', optionSchema);
+// MODEL
+const Option = Mongoose.model('option', optionSchema)
 
+// STATIC METHODS
 Option.create = function(req) {
-  if (!req._body) return next(createError(400, 'request body expected'));
+  if (!req._body) return next(createError(400, 'request body expected'))
 
   return Merch.findById(req.params.merchID)
   .then( merch => {
@@ -42,20 +46,23 @@ Option.create = function(req) {
       .then( option => {
         merch.options.push(option._id)
         merch.picURI.push(option.picURI)
-        // ! --total ? merch.save().then( merch => res.json(merch)): false;
+
         if(!--total) {
           merch.save()
           .then( merch => res.json(merch))
         }
-      });
-    });
-
-  });
+      })
+    })
+  })
 }
 
 Option.update = function(req) {
-  return Option.findOneAndUpdate({ _id: req.params._id, posterID: req.user.profile }, req.body, {new: true});
+  return Option.findOneAndUpdate(
+    { _id: req.params._id, 
+     posterID: req.user.profile },
+      req.body, {new: true}
+    )
 }
 
-
+// INTERFACE
 export default Option

@@ -1,6 +1,6 @@
 'use strict'
 
-// DEPENDECIES
+// IMPORTS
 import * as bcrypt from 'bcrypt'
 import {randomBytes} from 'crypto'
 import * as jwt from 'jsonwebtoken'
@@ -27,7 +27,8 @@ userSchema.methods.passwordCompare = function(password){
   })
 }
 
-userSchema.methods.tokenCreate  = function(){
+userSchema.methods.tokenCreate = function(){
+  console.log('creating token')
   this.randomHash = randomBytes(32).toString('base64')
   return this.save()
   .then(user => {
@@ -43,6 +44,7 @@ const User = Mongoose.model('user', userSchema)
 
 // STATIC METHODS
 User.create = function (user) {
+  console.log('___user_create__', user)
   if(!user.password || !user.email || !user.username)
     return Promise.reject(
       createError(400, 'VALIDATION ERROR: missing username email or password '))
