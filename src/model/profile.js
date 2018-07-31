@@ -1,7 +1,9 @@
+// IMPORTS
 import createError from 'http-errors'
 import * as util from '../lib'
 import Mongoose, {Schema} from 'mongoose'
 
+// SCHEMA
 const profileSchema = new Schema({
   userID: { type: Schema.Types.ObjectId, required: true, unique: true },
   name: { type: String },
@@ -28,10 +30,10 @@ const profileSchema = new Schema({
   created: {type: Date, default: Date.now}
 })
 
+// MODEL
 const Profile = Mongoose.model('profile', profileSchema)
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      CREATE
+// STATIC METHODS
 Profile.validateReqFile = function (req) {
   if(req.files.length > 1){
     return util.removeMulterFiles(req.files)
@@ -68,14 +70,6 @@ Profile.createProfileWithPhoto = function(req){
 }
 
 Profile.create = function(req){
-  // if(req.files){
-  //   return Profile.createProfileWithPhoto(req)
-  //   .then(profile => {
-  //     req.user.profile = profile._id
-  //     return req.user.save()
-  //     .then(() => profile)
-  //   })
-  // }
   return new Profile({
     userID: req.user._id,
     name: req.user.username,
@@ -88,14 +82,12 @@ Profile.create = function(req){
   })
 }
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      READ
-
 Profile.fetch = util.pagerCreate(Profile)
 
 Profile.fetchOne = function(req){
   return Profile.findById(req.params.id)
   .then(profile => {
+    console.log('__fetchOne__', profile)
     if(!profile)
       throw createError(404, 'NOT FOUND ERROR: profile not found') 
     return profile
@@ -188,11 +180,6 @@ Profile.unfriend = function(req) {
   })
 }
 
-
-
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      UPDATE
 Profile.updateProfileWithPhoto = function(req) {
   return Profile.validateReqFile(req)
   .then(file => {
@@ -211,9 +198,6 @@ Profile.update = function(req){
   return Profile.findByIdAndUpdate(req.user.profile, req.body , options)
 }
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                      DELETE
-
 Profile.delete = function(req){
   return Profile.findOneAndRemove({_id: req.params.id, owner: req.user._id})
   .then(profile => {
@@ -222,4 +206,5 @@ Profile.delete = function(req){
   })
 }
 
+// INTERFACE
 export default Profile
