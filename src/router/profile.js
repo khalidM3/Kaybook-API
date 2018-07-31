@@ -27,11 +27,6 @@ export default new Router()
   })
   .catch(next)
 })
-// .get('/api/profile/:id', (req, res, next) => {
-//   Profile.fetchOne(req)
-//   .then(res.json)
-//   .catch(next)
-// })
 .get('/api/profile/:id', (req, res, next) => {
   Profile.findOne({ userID: req.params.id})
   .then(res.json)
