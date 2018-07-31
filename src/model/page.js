@@ -1,8 +1,10 @@
+// IMPORTS
 import createError from 'http-errors'
 import * as util from '../lib'
 import Profile from './profile'
 import Mongoose, {Schema} from 'mongoose'
 
+// SCHEMA
 const pageSchema = new Schema({
   userID: { type: Schema.Types.ObjectId, required: true },
   profileID: {type: Schema.Types.ObjectId, required: true },
@@ -17,11 +19,12 @@ const pageSchema = new Schema({
   merch: [{ type: Schema.Types.ObjectId, unique: true, ref: 'merch'}],
   public: {type: Boolean, default: false},
   created: {type: Date, default: Date.now}
-});
+})
 
+// MODEL
+const Page = Mongoose.model('page', pageSchema)
 
-const Page = Mongoose.model('page', pageSchema);
-
+// STATIC METHODS
 Page.create = function(req) {
   return new Page({
     userID: req.user._id,
@@ -54,20 +57,20 @@ Page.findPages = function(req) {
 Page.join = function(req) {
   return Profile.findById(req.user.profile)
   .then( profile => {
-    let isMember = profile.memberOf.some( PageID => PageID.toString() === req.params.pageID.toString());
-    if(isMember) return next(createError(401, 'You are already a member'));
-    profile.memberOf.push(req.params.pageID);
-    ++profile.memberOfCount;
-    return profile.save();
+    let isMember = profile.memberOf.some( PageID => PageID.toString() === req.params.pageID.toString())
+    if(isMember) return next(createError(401, 'You are already a member'))
+    profile.memberOf.push(req.params.pageID)
+    ++profile.memberOfCount
+    return profile.save()
   })
   .then( profile => {
     return Page.findById(req.params.pageID)
     .then( page => {
-      let hasMember = page.members.some(PID => PID.toString() === profile._id.toString());
-      if(hasMember) return next(createError(401, 'You are already a member 2'));
-      page.members.push(profile._id);
-      ++page.membersCount;
-      return page.save();
+      let hasMember = page.members.some(PID => PID.toString() === profile._id.toString())
+      if(hasMember) return next(createError(401, 'You are already a member 2'))
+      page.members.push(profile._id)
+      ++page.membersCount
+      return page.save()
     })
   })
 }
@@ -90,8 +93,9 @@ Page.leave = function(req) {
 }
 
 Page.update = function(req) {
-  if (req._body !== true) return next(createError(400, 'nothing to update'));
+  if (req._body !== true) return next(createError(400, 'nothing to update'))
   return Page.findOneAndUpdate({ _id: req.params.id, userID: req.user._id}, req.body, { new: true } )
 }
 
+// INTERFACE
 export default Page
