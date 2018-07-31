@@ -4,8 +4,6 @@ import {Router} from 'express'
 import {bearerAuth} from '../middleware/parser-auth.js'
 import parserBody from '../middleware/parser-body'
 import Comment from '../model/post-comment'
-import createError from 'http-errors'
-import {log} from '../lib'
 
 export default new Router()
 .post('/api/answer/:postID', bearerAuth, parserBody, (req, res, next) => {
@@ -49,11 +47,11 @@ export default new Router()
   .then(res.json)
   .catch(next)
 })
-// .put('/api/page/:id', bearerAuth, parserBody, (req, res, next) => {
-//   Page.update(req)
-//   .then(res.json)
-//   .catch(next)
-// })
+.put('/api/page/:id', bearerAuth, parserBody, (req, res, next) => {
+  Page.update(req)
+  .then(res.json)
+  .catch(next)
+})
 .delete('/api/answer/deleteanswer/:answerID', bearerAuth, (req, res, next) => {
   Comment.delete(req)
   .then( () => res.sendStatus(204))
