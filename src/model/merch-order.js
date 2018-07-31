@@ -1,9 +1,10 @@
+// IMPORTS
 import createError from 'http-errors'
 import * as util from '../lib'
 import Profile from './profile'
 import Mongoose, {Schema} from 'mongoose'
 
-
+// SCHEMA
 const orderSchema = new Schema({
   buyer: {type: Schema.Types.ObjectId},
   seller: {type: Schema.Types.ObjectId},
@@ -29,10 +30,12 @@ const orderSchema = new Schema({
   ],
   fulfilled: {type: Boolean, default: false},
   created: {type: Date, default: Date.now}
-});
+})
 
-const Order = Mongoose.model('order', orderSchema);
+// MODEL
+const Order = Mongoose.model('order', orderSchema)
 
+// STATIC METHODS
 Order.create = function(req) {
   if (!req._body) return next(createError(400, 'request body expected'))
   req.body.buyer = req.user.profile
@@ -47,9 +50,9 @@ Order.create = function(req) {
         return option.save().exec()
       })
       if(i === order.orders.length - 1) res.json(order)
-    });
-  });
+    })
+  })
 }
 
-
+// INTERFACE
 export default Order
