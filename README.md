@@ -1,6 +1,6 @@
 <h1 align="center"> Kaybook-API </h1>
 
-KayBook is a RESTful API which can be used for e-commerce, posts, forums, polls, dms and much more.
+KayBook is a RESTful API which can be used for e-commerce, posts, forums, polls, chat groups, dms and much more.
 
 ### installing
 1. Clone the repo by running `git clone https://github.com/khalidM3/Kaybook-API`
@@ -18,3 +18,5 @@ KayBook is a RESTful API which can be used for e-commerce, posts, forums, polls,
 
 ### Environment
 Make sure you have Node a connection to a Mongo Database
+
+
