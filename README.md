@@ -26,4 +26,4 @@ All the routes are found in [`./src/router`](https://github.com/khalidM3/Kaybook
 
 ### NOTE
 * This project is not being maintained by me, but PR are always welcome. 
-* ES6 imports are not native to Node.js (as of now), this project is using babel, which transpiles es6 imports to Common JS. 
+* ES6 imports are not native to Node.js (as of now), this project is using babel, which transpiles es6 imports to CommonJS. 
