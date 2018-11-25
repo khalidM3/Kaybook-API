@@ -24,5 +24,6 @@ Make sure you are running Node.js and have connection to a Mongo Database
 
 All the routes are found in [`./src/router`](https://github.com/khalidM3/Kaybook-API/tree/master/src/router). I couldn't write docs for all 77 of them, so i made the code is extreamly readable. [Check it out](https://github.com/khalidM3/Kaybook-API/tree/master/src/router)
 
-### Future of project
-This project is not being maintained by me, but PR are always welcome. 
+### NOTE
+* This project is not being maintained by me, but PR are always welcome. 
+* ES6 imports are not native to Node.js (as of now), this project is using babel, which transpiles es6 imports to Common JS. 
