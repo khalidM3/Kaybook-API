@@ -5,7 +5,7 @@ KayBook is a RESTful API which can be used for e-commerce, posts, forums, polls,
 ### Environment
 Make sure you are running Node.js and have connection to a Mongo Database
 
-### installing
+### Installing
 1. Clone the repo by running `git clone https://github.com/khalidM3/Kaybook-API`
 2. Install dependacies by running `npm install` or `yarn install`
 3. Add a .env file with the following content, make sure to switch the placeholders with your values. 
