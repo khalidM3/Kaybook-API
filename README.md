@@ -17,6 +17,6 @@ KayBook is a RESTful API which can be used for e-commerce, posts, forums, polls,
 ```
 
 ### Environment
-Make sure you have Node a connection to a Mongo Database
+Make sure you are running Node,js and have connection to a Mongo Database
 
 
